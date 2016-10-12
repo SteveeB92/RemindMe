@@ -1,5 +1,6 @@
 package com.lilmanbigsolution.remindme;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.widget.Adapter;
 import android.widget.ImageButton;
 import android.app.*;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +26,8 @@ import com.google.android.gms.maps.MapFragment;
 
 public class ListActivity extends AppCompatActivity {
 
+    SQLiteDatabase contentsDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +35,11 @@ public class ListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        retrieveDatabaseData();
-        //openOrCreateDatabase();
+        openDatabase();
+        SimpleCursorAdapter listContentAdapter = retrieveDatabaseData();
 
-        ListView shoppingListView = findViewById(r.id.shoppingListView);
-        //shoppingListView.setAdapter();
-
+        ListView listView = findViewById(r.id.shoppingListView);
+        //listView.setAdapter();
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -88,7 +91,16 @@ public class ListActivity extends AppCompatActivity {
 
     }
 
-    public void retrieveDatabaseData(){
+    private void openDatabase(){
+        DBOpenHelper dbOpenHelper = new DBOpenHelper(this);
+        contentsDB = dbOpenHelper.getWritableDatabase();
+    }
 
+    private SimpleCursorAdapter retrieveDatabaseData()
+    {
+        String[] columnNames = {DBOpenHelper.COLUMN_LIST_CONTENT_ID, DBOpenHelper.COLUMN_LIST_CONTENT };
+        contentsDB.query(DBOpenHelper.LIST_TABLE_NAME, columnNames, null, null, null, null, null);
+        //TODO
+        return null;
     }
 }
