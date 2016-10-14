@@ -16,7 +16,7 @@
         android:choiceMode="none"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        tools:listitem="@android:layout/simple_list_item_2" />
+        tools:listitem="@layout/main_list_item_view" />
 <!--
     <fragment
         android:layout_width="match_parent"
