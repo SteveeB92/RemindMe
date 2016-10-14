@@ -1,26 +1,19 @@
 package com.lilmanbigsolution.remindme;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
 import android.widget.ImageButton;
 import android.app.*;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.gms.maps.MapFragment;
 
@@ -29,7 +22,7 @@ public class ListActivity extends AppCompatActivity {
     SQLiteDatabase contentsDB;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -42,10 +35,9 @@ public class ListActivity extends AppCompatActivity {
         listView.setAdapter(listContentAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
             }
         });
@@ -59,7 +51,7 @@ public class ListActivity extends AppCompatActivity {
                 //fragmentTransaction.add(R.id.mapFragment, mapFragment);
                 fragmentTransaction.commit();
             }
-        });
+        });*/
 
     }
 
@@ -97,9 +89,13 @@ public class ListActivity extends AppCompatActivity {
 
     private SimpleCursorAdapter retrieveDatabaseData()
     {
-        String[] columnNames = {DBOpenHelper.COLUMN_LIST_CONTENT_ID, DBOpenHelper.COLUMN_LIST_CONTENT };
-        contentsDB.query(DBOpenHelper.LIST_TABLE_NAME, columnNames, null, null, null, null, null);
-        //TODO
-        return null;
+        String[] columnNames = {DBOpenHelper.COLUMN_LIST_ITEM_ID, DBOpenHelper.COLUMN_LIST_ITEM, DBOpenHelper.COLUMN_LIST_LOCATION};
+        int[] layoutViews = {R.id.hiddenID, R.id.titleText, R.id.locationText};
+        Cursor cursor = contentsDB.query(DBOpenHelper.LIST_TABLE_NAME, columnNames, null, null, null, null, null);
+        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.main_list_item_view, cursor,
+                columnNames, layoutViews, 0);
+
+        //cursor.close();
+        return cursorAdapter;
     }
 }
