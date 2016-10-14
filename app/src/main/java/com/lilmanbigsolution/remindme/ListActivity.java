@@ -1,21 +1,19 @@
 package com.lilmanbigsolution.remindme;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageButton;
-import android.app.*;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-
-import com.google.android.gms.maps.MapFragment;
+import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -29,20 +27,18 @@ public class ListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         openDatabase();
-        SimpleCursorAdapter listContentAdapter = retrieveDatabaseData();
-
-        ListView listView = (ListView) findViewById(R.id.contentListView);
-        listView.setAdapter(listContentAdapter);
+        populateListView();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent createNewListIntent = new Intent(ListActivity.this, NewContentActivity.class);
+                ListActivity.this.startActivity(createNewListIntent);
             }
         });
 
-        ImageButton locationButton = (ImageButton) findViewById(R.id.locationImageButton);
+        /*ImageButton locationButton = (ImageButton) findViewById(R.id.locationImageButton);
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,15 +83,16 @@ public class ListActivity extends AppCompatActivity {
         contentsDB = dbOpenHelper.getWritableDatabase();
     }
 
-    private SimpleCursorAdapter retrieveDatabaseData()
+    private void populateListView()
     {
         String[] columnNames = {DBOpenHelper.COLUMN_LIST_ITEM_ID, DBOpenHelper.COLUMN_LIST_ITEM, DBOpenHelper.COLUMN_LIST_LOCATION};
         int[] layoutViews = {R.id.hiddenID, R.id.titleText, R.id.locationText};
         Cursor cursor = contentsDB.query(DBOpenHelper.LIST_TABLE_NAME, columnNames, null, null, null, null, null);
-        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.main_list_item_view, cursor,
+        SimpleCursorAdapter listContentAdapter = new SimpleCursorAdapter(this, R.layout.main_list_item_view, cursor,
                 columnNames, layoutViews, 0);
 
+        ListView listView = (ListView) findViewById(R.id.contentListView);
+        listView.setAdapter(listContentAdapter);
         //cursor.close();
-        return cursorAdapter;
     }
 }

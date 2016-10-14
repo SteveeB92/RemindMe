@@ -21,7 +21,16 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBIAZB8gL1npBc5VXBb6U2mCOnhYoUE_1U"/>
+            android:value="AIzaSyBIAZB8gL1npBc5VXBb6U2mCOnhYoUE_1U" />
+
+        <activity
+            android:name=".NewContentActivity"
+            android:label="@string/title_activity_new_content"
+            android:parentActivityName=".ListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lilmanbigsolution.remindme.ListActivity" />
+        </activity>
     </application>
 
 </manifest>
