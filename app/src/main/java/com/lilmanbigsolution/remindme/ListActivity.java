@@ -38,9 +38,8 @@ public class ListActivity extends AppCompatActivity {
         openDatabase();
         SimpleCursorAdapter listContentAdapter = retrieveDatabaseData();
 
-        ListView listView = findViewById(r.id.shoppingListView);
-        //listView.setAdapter();
-
+        ListView listView = (ListView) findViewById(R.id.contentListView);
+        listView.setAdapter(listContentAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +56,7 @@ public class ListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 MapFragment mapFragment = MapFragment.newInstance();
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.add(R.id.mapFragment, mapFragment);
+                //fragmentTransaction.add(R.id.mapFragment, mapFragment);
                 fragmentTransaction.commit();
             }
         });
