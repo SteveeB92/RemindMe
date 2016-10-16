@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -52,6 +53,12 @@ public class ListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        populateListView();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_list, menu);
@@ -85,14 +92,21 @@ public class ListActivity extends AppCompatActivity {
 
     private void populateListView()
     {
-        String[] columnNames = {DBOpenHelper.COLUMN_LIST_ITEM_ID, DBOpenHelper.COLUMN_LIST_ITEM, DBOpenHelper.COLUMN_LIST_LOCATION};
-        int[] layoutViews = {R.id.hiddenID, R.id.titleText, R.id.locationText};
+        String[] columnNames = {DBOpenHelper.COLUMN_ID, DBOpenHelper.COLUMN_LIST_ITEM, DBOpenHelper.COLUMN_LIST_LOCATION};
+        int[] layoutViews = {R.id.hiddenListItemID, R.id.titleText, R.id.locationText};
         Cursor cursor = contentsDB.query(DBOpenHelper.LIST_TABLE_NAME, columnNames, null, null, null, null, null);
         SimpleCursorAdapter listContentAdapter = new SimpleCursorAdapter(this, R.layout.main_list_item_view, cursor,
                 columnNames, layoutViews, 0);
 
         ListView listView = (ListView) findViewById(R.id.contentListView);
         listView.setAdapter(listContentAdapter);
-        //cursor.close();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent createNewListIntent = new Intent(ListActivity.this, NewContentActivity.class);
+                ListActivity.this.startActivity(createNewListIntent);
+            }
+        });
     }
 }
