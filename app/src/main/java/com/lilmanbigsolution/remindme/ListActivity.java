@@ -11,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -105,6 +108,18 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent createNewListIntent = new Intent(ListActivity.this, NewContentActivity.class);
+
+                RelativeLayout layout = (RelativeLayout) ((LinearLayout) view).getChildAt(0);
+
+                createNewListIntent.putExtra("CallingSource", NewContentActivity.CallingSource.CHANGE.callingSource);
+
+                int listItemID = Integer.parseInt(((TextView) layout.getChildAt(0)).getText().toString());
+                createNewListIntent.putExtra("ListItemID", listItemID);
+                String title = ((TextView) layout.getChildAt(1)).getText().toString();
+                createNewListIntent.putExtra("Title", title);
+                String location = ((TextView) layout.getChildAt(2)).getText().toString();
+                createNewListIntent.putExtra("Location", location);
+
                 ListActivity.this.startActivity(createNewListIntent);
             }
         });

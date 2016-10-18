@@ -1,5 +1,6 @@
 package com.lilmanbigsolution.remindme;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ import android.widget.TextView;
 
 public class NewContentActivity extends AppCompatActivity {
 
+    private int listItemId;
+
     public enum CallingSource {
         ADD (0),
         CHANGE (1);
 
-        private int callingSource;
+        public int callingSource;
 
         private CallingSource(int callingSource){
             this.callingSource = callingSource;
@@ -34,7 +37,7 @@ public class NewContentActivity extends AppCompatActivity {
 
         setDefaultValues();
 
-        addNewContentItems(0, false, null);
+        addNewContentItems(false, 0, false, null);
 
     }
 
@@ -44,6 +47,8 @@ public class NewContentActivity extends AppCompatActivity {
 
         if (callingSource == CallingSource.CHANGE.callingSource){
             //Get the values to default the values on the page
+            listItemId = getIntent().getIntExtra("ListItemID", 0);
+
             String titleText = getIntent().getStringExtra("Title");
             EditText titleTextView = (EditText) findViewById(R.id.titleText);
             titleTextView.setText(titleText);
@@ -52,7 +57,22 @@ public class NewContentActivity extends AppCompatActivity {
             TextView locationView = (TextView) findViewById(R.id.locationText);
             locationView.setText(locationText);
 
-            //TODO Default the checkbox lists
+            //Default the checkbox content lists
+            DBOpenHelper dbOpenHelper = new DBOpenHelper(this);
+            SQLiteDatabase contentsDB = dbOpenHelper.getWritableDatabase();
+            String[] contentsColumns = {dbOpenHelper.COLUMN_ID,
+                    dbOpenHelper.COLUMN_LIST_ITEM_CONTENTS, dbOpenHelper.COLUMN_LIST_ITEM_CONTENT_COMPLETED};
+            String whereClause = dbOpenHelper.COLUMN_LIST_ITEM_ID + "=" + listItemId;
+            Cursor cursor = contentsDB.query(dbOpenHelper.LIST_CONTENTS_TABLE_NAME, contentsColumns,
+                    whereClause, null, null, null, null );
+
+            while (cursor.moveToNext()){
+                int contentsID = cursor.getInt(cursor.getColumnIndex(dbOpenHelper.COLUMN_ID));
+                boolean isCompleted = cursor.getInt(cursor.getColumnIndex(dbOpenHelper.COLUMN_LIST_ITEM_CONTENT_COMPLETED)) == 1;
+                String contents = cursor.getString(cursor.getColumnIndex(dbOpenHelper.COLUMN_LIST_ITEM_CONTENTS));
+
+                addNewContentItems(false, contentsID, isCompleted, contents);
+            }
 
         }
     }
@@ -63,7 +83,7 @@ public class NewContentActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
                     //Add new layout beneath
-                    addNewContentItems(0, false, null);
+                    addNewContentItems(true, 0, false, null);
                     return true;
                 }
 
@@ -72,14 +92,14 @@ public class NewContentActivity extends AppCompatActivity {
         });
     }
 
-    private void addNewContentItems(int id, boolean isCompleted, String content){
+    private void addNewContentItems(boolean isSetFocus, int id, boolean isCompleted, String content){
         LinearLayout growingContentContainer = (LinearLayout) findViewById(R.id.growingContentContainer);
 
         LinearLayout newLinearLayout = new LinearLayout(this);
         newLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
         TextView textViewID = new TextView(this);
-        textViewID.setText(id);
+        textViewID.setText(""+id);
         textViewID.setVisibility(View.GONE);
 
         CheckBox checkbox = new CheckBox(this);
@@ -99,7 +119,8 @@ public class NewContentActivity extends AppCompatActivity {
 
         growingContentContainer.addView(newLinearLayout);
 
-        contentText.requestFocus();
+        if (isSetFocus)
+            contentText.requestFocus();
     }
 
     @Override
