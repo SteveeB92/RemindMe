@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class NewContentActivity extends AppCompatActivity {
 
-    private int listItemId;
+    private long listItemId;
 
     public enum CallingSource {
         ADD (0),
@@ -52,6 +52,7 @@ public class NewContentActivity extends AppCompatActivity {
             String titleText = getIntent().getStringExtra("Title");
             EditText titleTextView = (EditText) findViewById(R.id.titleText);
             titleTextView.setText(titleText);
+            titleTextView.setSelection(titleText.length());
 
             String locationText = getIntent().getStringExtra("Location");
             TextView locationView = (TextView) findViewById(R.id.locationText);
@@ -136,7 +137,12 @@ public class NewContentActivity extends AppCompatActivity {
 
         TextView locationView = (TextView) findViewById(R.id.locationText);
         String locationText = locationView.getText().toString();
-        long listItemID = dbOpenHelper.addNewListItem(contentsDB, titleText, locationText, null);
+
+        //Create if id has not been created yet
+        if (listItemId == 0)
+            listItemId = dbOpenHelper.addNewListItem(contentsDB, titleText, locationText, null);
+        else
+            listItemId = dbOpenHelper.UpdateListItem(contentsDB, listItemId, titleText, locationText, null);
 
         //Iterate through children views of our growing container
         LinearLayout growingContentContainer = (LinearLayout) findViewById(R.id.growingContentContainer);
@@ -154,7 +160,7 @@ public class NewContentActivity extends AppCompatActivity {
 
             //Create if id has not been created
             if (listViewContentsID == 0)
-                dbOpenHelper.addNewListItemContent(contentsDB, listItemID, isCompleted, contentString);
+                dbOpenHelper.addNewListItemContent(contentsDB, listItemId, isCompleted, contentString);
             else
                 dbOpenHelper.updateListItemContent(contentsDB, listViewContentsID, isCompleted, contentString);
         }

@@ -90,6 +90,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Change a list item and return the id (-1 if errored)
+     * @param title
+     * @param location
+     * @param coordinates
+     * @return int - the changed List Item ID (-1 if errored)
+     */
+    public long UpdateListItem(SQLiteDatabase db, long listItemID, String title, String location, String coordinates) {
+        ContentValues listItem = new ContentValues();
+        listItem.put(COLUMN_LIST_ITEM, title);
+        listItem.put(COLUMN_LIST_LOCATION, location);
+        return db.update(LIST_TABLE_NAME, listItem, COLUMN_ID + "=" + listItemID, null);
+    }
+
+    /**
      * Create a new list item Content and return the id (-1 if errored)
      * @param db
      * @param listItemID
