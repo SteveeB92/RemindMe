@@ -22,14 +22,12 @@
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:layout_alignParentLeft="true"
-            android:inputType="textCapSentences"
             android:textAppearance="?attr/textAppearanceListItem" />
 
         <TextView android:id="@+id/locationText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:inputType="textCapSentences"
             android:textAppearance="?attr/textAppearanceListItem" />
 
     </RelativeLayout>
